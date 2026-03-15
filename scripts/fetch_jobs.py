@@ -39,7 +39,7 @@ prompt = ChatPromptTemplate.from_template(
     - salary = salary range
     - job_type = Full-time / Part-time / Contract
     - description = summary of description of the job
-    - match_score = between 0 to 100 (higher the better) match resume with job description
+    - match_score = between 0 to 100 (higher the better) match resume with job description and give proper score as you are resume matcher expert
     - experience = years of experience required to apply for the job e.g. 2 years, 2+, 2-5 years
     - If a value is missing return "Not Specified"
     - Return ONLY valid JSON
