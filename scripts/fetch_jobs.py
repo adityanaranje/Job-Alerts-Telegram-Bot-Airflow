@@ -54,52 +54,68 @@ formatted_time = datetime.now(ist).strftime("%Y-%m-%d %H:%M:%S")
 
 resume_text = load_resume()
 
+
+
 def fetch_jobs():
 
     client = serpapi.Client(api_key=SERP_API_KEY)
 
-    results = client.search({
-        "engine": "google_jobs",
-        "location": "India",
-        "google_domain": "google.co.in",
-        "hl": "en",
-        "gl": "in",
-        "q": "AI ML Engineer, Data Scientist, Data Analyst, Generative AI",
-        "filters":""
-    })
-
+    roles = [
+        "AI ML Engineer",
+        "Data Scientist",
+        "Generative AI Engineer"
+    ]
 
     jobs = []
 
-    for job in results["jobs_results"]:
-        description =  job["description"][:1200] if len(job["description"])>1200 else job["description"]
+    for role in roles:
 
-        response = chain.invoke({
-            "title":job["title"],
-            "extensions" : job['extensions'],
-            "detected_extensions":job["detected_extensions"],
-            "description": description,
-            "resume": resume_text
-            }
-        )
-        
-        job_id = job.get("job_id")
+        results = client.search({
+            "engine": "google_jobs",
+            "location": "India",
+            "google_domain": "google.co.in",
+            "hl": "en",
+            "gl": "in",
+            "q": role,
+        })
 
-        jobs.append({
-                    "job_id": job_id,
-                    "title": response.get("title"),
-                    "company": job.get("company_name"),
-                    "experience": response.get("experience"),
-                    "location": job.get("location"),
-                    "link": job.get("apply_options",[{}])[0].get("link"),
-                    "salary": response.get("salary"),
-                    'job_type':response.get('job_type'),
-                    "posted_at": response.get('posted_at'),
-                    "fetched_at": formatted_time,
-                    "alert_sent": False,
-                    "match_score": float(response.get("match_score")),
-                    "description": response.get("description"),
-                })
-        
+        for job in results.get("jobs_results", []):
 
-    return pd.DataFrame(jobs)
+            job_id = job.get("job_id")
+
+            description = job.get("description", "")
+
+            if description:
+                description = description[:1200]
+
+            response = chain.invoke({
+                "title": job.get("title"),
+                "extensions": job.get("extensions", []),
+                "detected_extensions": job.get("detected_extensions", {}),
+                "description": description,
+                "resume": resume_text
+            })
+
+            jobs.append({
+                "job_id": job_id,
+                "title": response.get("title"),
+                "company": job.get("company_name"),
+                "experience": response.get("experience"),
+                "location": job.get("location"),
+                "link": job.get("apply_options", [{}])[0].get("link"),
+                "salary": response.get("salary"),
+                "job_type": response.get("job_type"),
+                "posted_at": response.get("posted_at"),
+                "fetched_at": formatted_time,
+                "alert_sent": False,
+                "match_score": float(response.get("match_score", 0)),
+                "description": response.get("description"),
+                "search_role": role
+            })
+
+    df = pd.DataFrame(jobs)
+
+    # Remove duplicate jobs
+    df = df.drop_duplicates(subset=["job_id"])
+
+    return df
