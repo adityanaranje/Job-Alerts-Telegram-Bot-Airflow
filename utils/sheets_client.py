@@ -4,9 +4,6 @@ from config import GOOGLE_SHEET_NAME
 import os
 import json
 
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-
-CREDENTIAL_PATH = os.path.join(BASE_DIR, "credentials.json")
 
 creds_dict = json.loads(os.environ["GOOGLE_CREDENTIALS"])
 
@@ -18,7 +15,7 @@ def get_sheet():
     ]
 
     creds = ServiceAccountCredentials.from_json_keyfile_name(
-        CREDENTIAL_PATH, scope
+        creds_dict, scope
     )
 
     client = gspread.authorize(creds)
