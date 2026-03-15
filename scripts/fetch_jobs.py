@@ -1,0 +1,105 @@
+import pandas as pd
+from datetime import datetime
+from config import SERP_API_KEY, llm
+from utils.resume_loader import load_resume
+import serpapi
+import pytz
+
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import JsonOutputParser
+
+
+parser = JsonOutputParser()
+
+prompt = ChatPromptTemplate.from_template(
+    """
+    Extract job information from the following data.
+
+    extensions: {extensions}
+    detected_extensions: {detected_extensions}
+    title: {title}
+    description: {description}
+    resume : {resume}
+
+    Return JSON with this structure:
+
+    {{
+    "title":"",
+    "posted_at": "",
+    "salary": "",
+    "job_type": "",
+    "description":"",
+    "match_score":"",
+    "experience":""
+    }}
+
+    Rules:
+    - title = title of the job only (remove extra data from title if present)
+    - posted_at = time since job was posted
+    - salary = salary range
+    - job_type = Full-time / Part-time / Contract
+    - description = summary of description of the job
+    - match_score = between 0 to 100 (higher the better) match resume with job description
+    - experience = years of experience required to apply for the job e.g. 2 years, 2+, 2-5 years
+    - If a value is missing return "Not Specified"
+    - Return ONLY valid JSON
+    """
+)
+
+chain = prompt | llm | parser
+
+ist = pytz.timezone("Asia/Kolkata")
+
+formatted_time = datetime.now(ist).strftime("%Y-%m-%d %H:%M:%S")
+
+resume_text = load_resume()
+
+def fetch_jobs():
+
+    client = serpapi.Client(api_key=SERP_API_KEY)
+
+    results = client.search({
+        "engine": "google_jobs",
+        "location": "India",
+        "google_domain": "google.co.in",
+        "hl": "en",
+        "gl": "in",
+        "q": "AI ML Engineer, Data Scientist, Data Analyst, Generative AI",
+        "filters":""
+    })
+
+
+    jobs = []
+
+    for job in results["jobs_results"]:
+        description =  job["description"][:1200] if len(job["description"])>1200 else job["description"]
+
+        response = chain.invoke({
+            "title":job["title"],
+            "extensions" : job['extensions'],
+            "detected_extensions":job["detected_extensions"],
+            "description": description,
+            "resume": resume_text
+            }
+        )
+        
+        job_id = job.get("job_id")
+
+        jobs.append({
+                    "job_id": job_id,
+                    "title": response.get("title"),
+                    "company": job.get("company_name"),
+                    "experience": response.get("experience"),
+                    "location": job.get("location"),
+                    "link": job.get("apply_options",[{}])[0].get("link"),
+                    "salary": response.get("salary"),
+                    'job_type':response.get('job_type'),
+                    "posted_at": response.get('posted_at'),
+                    "fetched_at": formatted_time,
+                    "alert_sent": False,
+                    "match_score": float(response.get("match_score")),
+                    "description": response.get("description"),
+                })
+        
+
+    return pd.DataFrame(jobs)

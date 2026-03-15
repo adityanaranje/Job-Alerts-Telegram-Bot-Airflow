@@ -1,0 +1,11 @@
+serpapi
+pandas
+requests
+beautifulsoup4
+apache-airflow
+gspread
+oauth2client
+scikit-learn
+python-dotenv
+langchain-core
+langchain-openai
