@@ -20,6 +20,6 @@ def get_sheet():
 
     client = gspread.authorize(creds)
 
-    sheet = client.open("Job-Alerts").Sheet1
+    sheet = client.open("Job-Alerts").sheet1
 
     return sheet
