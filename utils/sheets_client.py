@@ -5,7 +5,7 @@ import os
 import json
 
 
-creds_dict = json.loads(os.environ["GOOGLE_CREDENTIALS"])
+creds_dict = json.loads(os.getenv("GOOGLE_CREDENTIALS"))
 
 def get_sheet():
 
