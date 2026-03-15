@@ -14,7 +14,7 @@ def get_sheet():
         "https://www.googleapis.com/auth/drive"
     ]
 
-    creds = ServiceAccountCredentials.from_json_keyfile_name(
+    creds = ServiceAccountCredentials.from_json_keyfile_dict(
         creds_dict, scope
     )
 
