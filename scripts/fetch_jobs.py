@@ -77,6 +77,7 @@ def fetch_jobs():
             "hl": "en",
             "gl": "in",
             "q": role,
+            "fiters":"4 Days ago",
         })
 
         for job in results.get("jobs_results", []):
