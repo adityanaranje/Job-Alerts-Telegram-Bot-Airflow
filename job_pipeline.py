@@ -1,5 +1,3 @@
-from airflow import DAG
-from airflow.providers.standard.operators.python import PythonOperator
 from datetime import datetime
 import os
 
@@ -21,15 +19,5 @@ def pipeline():
     
     send_alerts(df)
 
-
-with DAG(
-    dag_id="job_alert_pipeline",
-    start_date=datetime(2024,1,1),
-    schedule="*/30 * * * *",
-    catchup=False,
-) as dag:
-
-    run_pipeline = PythonOperator(
-        task_id="job_pipeline",
-        python_callable=pipeline
-    )
+if __name__ == "__main__":
+    pipeline()
