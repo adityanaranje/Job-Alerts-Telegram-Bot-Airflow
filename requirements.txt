@@ -2,7 +2,7 @@ serpapi
 pandas
 requests
 beautifulsoup4
-apache-airflow
+pytz
 gspread
 oauth2client
 scikit-learn
