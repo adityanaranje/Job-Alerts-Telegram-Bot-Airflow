@@ -9,7 +9,7 @@ def is_valid_url(url):
 
 def send_alerts(data):
 
-    top_jobs = data.sort_values("Match Score", ascending=False).head(10)
+    top_jobs = data.sort_values("Match Score", ascending=False)
 
     for index, job_data in top_jobs.iterrows():
 
