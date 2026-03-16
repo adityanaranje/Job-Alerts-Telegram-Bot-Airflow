@@ -125,8 +125,7 @@ def fetch_jobs():
                     "fetched_at": formatted_time,
                     "alert_sent": False,
                     "match_score": float(response.get("match_score", 0)),
-                    "description": response.get("description"),
-                    "search_role": role
+                    "description": response.get("description")
                 })
 
     df = pd.DataFrame(jobs)
