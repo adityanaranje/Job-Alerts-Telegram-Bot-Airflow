@@ -30,7 +30,8 @@ prompt = ChatPromptTemplate.from_template(
     "job_type": "",
     "description":"",
     "match_score":"",
-    "experience":""
+    "experience":"",
+    "posted_before":"",
     }}
 
     Rules:
@@ -48,10 +49,12 @@ prompt = ChatPromptTemplate.from_template(
         - 0–29 → Poor match (mostly unrelated)
         
         Rules:
+        - Give first priority to experience if experience not within job range give low score.
         - Do NOT give >85 unless resume strongly matches required skills and experience.
         - If key skills or experience are missing, keep score below 70.
         - Entry-level resume for senior role → below 50.
     - experience = years of experience required to apply for the job e.g. 2 years, 2+, 2-5 years
+    - posted_before = return hours in number when job was posted e.g. 3 days -> 36, 2 days -> 24
     - If a value is missing return "Not Specified"
     - Return ONLY valid JSON
     """
