@@ -39,7 +39,18 @@ prompt = ChatPromptTemplate.from_template(
     - salary = salary range
     - job_type = Full-time / Part-time / Contract
     - description = summary of description of the job
-    - match_score = between 0 to 100 (higher the better) match resume with job description and give proper score as you are resume matcher expert
+    - match_score = Score from 0–100 based on resume vs job description.
+        Guidelines for match_score:
+        - 85–100 → Excellent match (most required skills + experience match)
+        - 70–84 → Good match (many skills match but some gaps)
+        - 50–69 → Partial match (some relevant skills but missing key ones)
+        - 30–49 → Weak match (few relevant skills or experience gap)
+        - 0–29 → Poor match (mostly unrelated)
+        
+        Rules:
+        - Do NOT give >85 unless resume strongly matches required skills and experience.
+        - If key skills or experience are missing, keep score below 70.
+        - Entry-level resume for senior role → below 50.
     - experience = years of experience required to apply for the job e.g. 2 years, 2+, 2-5 years
     - If a value is missing return "Not Specified"
     - Return ONLY valid JSON
