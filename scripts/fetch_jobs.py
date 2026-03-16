@@ -53,6 +53,7 @@ prompt = ChatPromptTemplate.from_template(
         - Do NOT give >85 unless resume strongly matches required skills and experience.
         - If key skills or experience are missing, keep score below 70.
         - Entry-level resume for senior role → below 50.
+        - Add +3 score if location is in prefered location or remote if not -3
     - experience = years of experience required to apply for the job e.g. 2 years, 2+, 2-5 years
     - posted_before = return hours in number when job was posted e.g. 3 days -> 36, 2 days -> 24
     - If a value is missing return "Not Specified"
