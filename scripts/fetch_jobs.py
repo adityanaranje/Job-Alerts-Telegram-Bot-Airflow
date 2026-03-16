@@ -108,22 +108,23 @@ def fetch_jobs():
                 "resume": resume_text
             })
 
-            jobs.append({
-                "job_id": job_id,
-                "title": response.get("title"),
-                "company": job.get("company_name"),
-                "experience": response.get("experience"),
-                "location": job.get("location"),
-                "link": job.get("apply_options", [{}])[0].get("link"),
-                "salary": response.get("salary"),
-                "job_type": response.get("job_type"),
-                "posted_at": response.get("posted_at"),
-                "fetched_at": formatted_time,
-                "alert_sent": False,
-                "match_score": float(response.get("match_score", 0)),
-                "description": response.get("description"),
-                "search_role": role
-            })
+            if float(response.get("match_score", 0)) >= 65:
+                jobs.append({
+                    "job_id": job_id,
+                    "title": response.get("title"),
+                    "company": job.get("company_name"),
+                    "experience": response.get("experience"),
+                    "location": job.get("location"),
+                    "link": job.get("apply_options", [{}])[0].get("link"),
+                    "salary": response.get("salary"),
+                    "job_type": response.get("job_type"),
+                    "posted_at": response.get("posted_at"),
+                    "fetched_at": formatted_time,
+                    "alert_sent": False,
+                    "match_score": float(response.get("match_score", 0)),
+                    "description": response.get("description"),
+                    "search_role": role
+                })
 
     df = pd.DataFrame(jobs)
 
