@@ -55,7 +55,7 @@ prompt = ChatPromptTemplate.from_template(
         - Entry-level resume for senior role → below 50.
         - Add +3 score if location is in prefered location or remote if not -3
     - experience = years of experience required to apply for the job e.g. 2 years, 2+, 2-5 years
-    - posted_before = return hours in number when job was posted e.g. 3 days -> 36, 2 days -> 24
+    - posted_before = return hours in number only when job was posted which is posted_at keyword e.g. 3 days -> 72, 2 days -> 48
     - If a value is missing return "Not Specified"
     - Return ONLY valid JSON
     """
@@ -112,7 +112,7 @@ def fetch_jobs():
                 "resume": resume_text
             })
 
-            if float(response.get("match_score", 0)) >= 65 and int(job.get("posted_before")) <= 36:
+            if float(response.get("match_score", 0)) >= 65 and int(response.get("posted_before")) <= 72:
                 jobs.append({
                     "job_id": job_id,
                     "title": response.get("title"),
