@@ -111,7 +111,7 @@ def fetch_jobs():
                 "resume": resume_text
             })
 
-            if float(response.get("match_score", 0)) >= 65:
+            if float(response.get("match_score", 0)) >= 65 and int(job.get("posted_before")) <= 36:
                 jobs.append({
                     "job_id": job_id,
                     "title": response.get("title"),
