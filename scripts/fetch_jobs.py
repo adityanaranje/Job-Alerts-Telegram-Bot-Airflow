@@ -69,7 +69,11 @@ formatted_time = datetime.now(ist).strftime("%Y-%m-%d %H:%M:%S")
 
 resume_text = load_resume()
 
-
+def safe_int(value, default=72):
+    try:
+        return int(value)
+    except (ValueError, TypeError):
+        return default
 
 def fetch_jobs():
 
@@ -112,7 +116,9 @@ def fetch_jobs():
                 "resume": resume_text
             })
 
-            if float(response.get("match_score", 0)) >= 65 and int(response.get("posted_before")) <= 72:
+            posted_before = safe_int(response.get("posted_before"));
+
+            if float(response.get("match_score", 0)) >= 65 and posted_before <= 72:
                 jobs.append({
                     "job_id": job_id,
                     "title": response.get("title"),
